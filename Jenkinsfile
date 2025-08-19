@@ -2,9 +2,9 @@ pipeline {
     agent  {
         label 'AGENT-1'
     }
-/*     environment { 
-        COURSE = 'jenkins'
-    } */
+    environment { 
+        appVersion = ''
+    }
     options {
         timeout(time: 30, unit: 'MINUTES') 
         disableConcurrentBuilds()
@@ -19,14 +19,12 @@ pipeline {
 
     // build
     stages {
-        stage('Build') {
-            steps {
+        stage('Read package.json') {
+            steps  {
                 script {
-                    sh """
-                        echo 'Building..'
-                        sleep 10
-                        env
-                    """
+                    // Read the package.json file
+                    def packageJson = readJSON file: 'package.json'
+                    appVersion = packageJson.version
                 }
             }
         }
@@ -52,4 +50,5 @@ pipeline {
         }
     }
 }
+
 
